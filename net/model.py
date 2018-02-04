@@ -95,17 +95,18 @@ class LSTM_SINGLE_ENCODER(nn.Module):
         self.data_size = config.getint("data", "vec_size")
         self.hidden_dim = config.getint("net", "hidden_size")
 
-        self.lstm = nn.LSTM(self.data_size, self.hidden_dim, batch_first=True)
+        self.lstm = nn.LSTM(self.data_size, self.hidden_dim, batch_first=True, num_layers=2)
+        self.dropout = nn.Dropout(p=config.getfloat("train","dropout"))
 
     def init_hidden(self, config, usegpu):
         if torch.cuda.is_available() and usegpu:
             self.hidden = (
-                torch.autograd.Variable(torch.zeros(1, config.getint("data", "batch_size"), self.hidden_dim).cuda()),
-                torch.autograd.Variable(torch.zeros(1, config.getint("data", "batch_size"), self.hidden_dim).cuda()))
+                torch.autograd.Variable(torch.zeros(2, config.getint("data", "batch_size"), self.hidden_dim).cuda()),
+                torch.autograd.Variable(torch.zeros(2, config.getint("data", "batch_size"), self.hidden_dim).cuda()))
         else:
             self.hidden = (
-                torch.autograd.Variable(torch.zeros(1, config.getint("data", "batch_size"), self.hidden_dim)),
-                torch.autograd.Variable(torch.zeros(1, config.getint("data", "batch_size"), self.hidden_dim)))
+                torch.autograd.Variable(torch.zeros(2, config.getint("data", "batch_size"), self.hidden_dim)),
+                torch.autograd.Variable(torch.zeros(2, config.getint("data", "batch_size"), self.hidden_dim)))
 
     def forward(self, x, doc_len, config):
         x = x.view(config.getint("data", "batch_size"),
@@ -125,7 +126,7 @@ class LSTM_SINGLE_ENCODER(nn.Module):
         else:
             gg
 
-        return lstm_out
+        return self.dropout(lstm_out)
 
 
 class LSTM_ENCODER(nn.Module):

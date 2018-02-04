@@ -7,7 +7,7 @@ def get_data_list(d):
 
 def get_num_classes(s):
     if s == "crit":
-        return 41
+        return 154
     if s == "law1":
         return 39
     if s == "law2":

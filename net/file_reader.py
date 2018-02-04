@@ -20,8 +20,8 @@ transformer = {x: transformer.vec[y] for x, y in transformer.word2id.items()}
 
 print("working done")
 
-train_num_process = 5
-test_num_process = 2
+train_num_process = 1
+test_num_process = 1
 
 
 class reader():
@@ -90,14 +90,8 @@ class reader():
                         return None
                     continue
 
-                try:
-                    y = json.loads(x)
-                except Exception as e:
-                    print("==========================")
-                    print(x)
-                    print("==========================")
-                    gg
-                if check(y, config):
+                y=x
+                if True:#check(y, config):
                     data_list.append(parse(y, config, transformer))
                     self.read_cnt += 1
 

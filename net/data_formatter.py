@@ -231,21 +231,12 @@ def generate_vector(data, config, transformer):
 def parse(data, config, transformer):
     label_list = config.get("data", "type_of_label").replace(" ", "").split(",")
     label = []
-    for x in label_list:
-        if x == "crit":
-            label.append(analyze_crit(data["meta"]["crit"], config))
-        if x == "law1":
-            label.append(analyze_law1(data["meta"]["law"], config))
-        if x == "law2":
-            label.append(analyze_law2(data["meta"]["law"], config))
-        if x == "time":
-            label.append(analyze_time(data["meta"]["time"], config))
-    # print(data)
-    vector, len_vec = generate_vector(data["content"], config, transformer)
-    # print(data)
-    # print(vector)
-    # print(len_vec)
-    # print(label)
+    arr = data.split("\t")
+    label.append(int(arr[1]))
+    arr = arr[0].split(" ")
+    if len(arr)>500:
+        arr = arr[0:500]
+    vector, len_vec = generate_vector([arr],config,transformer)
     return vector, len_vec, torch.LongTensor(label)
 
 
