@@ -212,11 +212,11 @@ def generate_vector(data, config, transformer):
         #    temp_vec.append(torch.from_numpy(get_word_vec("BLANK", config, transformer)))
         vec.append(torch.stack(temp_vec))
 
-    while len(len_vec) < config.getint("data", "sentence_num"):
+    while len(len_vec) < config.getint("data", "sentence_num")+2:
         len_vec.append(1)
 
     vec = torch.stack(vec)
-    vec = F.pad(vec, (0, 0, 0, 0, 0, config.getint("data", "sentence_num")))
+    vec = F.pad(vec, (0, 0, 0, 0, 0, config.getint("data", "sentence_num")-len(vec)))
     if len_vec[1] > config.getint("data", "sentence_num"):
         gg
     for a in range(2, len(len_vec)):
@@ -226,7 +226,7 @@ def generate_vector(data, config, transformer):
     if len(len_vec) != config.getint("data", "sentence_num") + 2:
         gg
 
-    return vec, torch.LongTensor(len_vec)
+    return vec.data, torch.LongTensor(len_vec)
 
 
 def parse(data, config, transformer):
