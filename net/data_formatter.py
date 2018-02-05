@@ -3,6 +3,7 @@ import json
 import torch
 import random
 import numpy as np
+import torch.nn.functional as F
 
 accusation_list = []
 accusation_dict = {}
@@ -205,27 +206,27 @@ def generate_vector(data, config, transformer):
             len_vec[0] += 1
             z = get_word_vec(y, config, transformer)
             temp_vec.append(torch.from_numpy(z))
-        while len(temp_vec) < config.getint("data", "sentence_len"):
-            temp_vec.append(torch.from_numpy(get_word_vec("BLANK", config, transformer)))
+        temp_vec = torch.stack(temp_vec)
+        temp_vec = F.pad(temp_vec, (0, 0, 0, config.getint("data", "sentence_len") - len(temp_vec)))
+        # while len(temp_vec) < config.getint("data", "sentence_len"):
+        #    temp_vec.append(torch.from_numpy(get_word_vec("BLANK", config, transformer)))
         vec.append(torch.stack(temp_vec))
 
-    temp_vec = []
-    while len(temp_vec) < config.getint("data", "sentence_len"):
-        temp_vec.append(torch.from_numpy(get_word_vec("BLANK", config, transformer)))
-
-    while len(vec) < config.getint("data", "sentence_num"):
-        vec.append(torch.stack(temp_vec))
+    while len(len_vec) < config.getint("data", "sentence_num"):
         len_vec.append(1)
-    if len_vec[1] > config.getint("data","sentence_num"):
+
+    vec = torch.stack(vec)
+    vec = F.pad(vec, (0, 0, 0, 0, 0, config.getint("data", "sentence_num")))
+    if len_vec[1] > config.getint("data", "sentence_num"):
         gg
     for a in range(2, len(len_vec)):
-        if len_vec[a] > config.getint("data","sentence_len"):
+        if len_vec[a] > config.getint("data", "sentence_len"):
             print(data)
             gg
-    if len(len_vec) != config.getint("data","sentence_num")+2:
+    if len(len_vec) != config.getint("data", "sentence_num") + 2:
         gg
 
-    return torch.stack(vec), torch.LongTensor(len_vec)
+    return vec, torch.LongTensor(len_vec)
 
 
 def parse(data, config, transformer):
