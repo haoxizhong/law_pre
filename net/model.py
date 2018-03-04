@@ -479,12 +479,14 @@ class ARTICLE(nn.Module):
 
         self.encoder = CNN_ENCODER(config, usegpu)
         self.decoder = LSTM_DECODER_ARTICLE(config, usegpu)
+        self.dropout = nn.Dropout(config.getfloat("train","dropout"))
 
     def init_hidden(self, config, usegpu):
         self.decoder.init_hidden(config, usegpu)
 
     def forward(self, x, doc_len, config):
         x = self.encoder(x, doc_len, config)
+        x = self.dropout(x)
         x = self.decoder(x, doc_len, config, self.encoder.attention)
 
         return x
@@ -495,6 +497,7 @@ class CNN(nn.Module):
         super(CNN, self).__init__()
 
         self.encoder = CNN_ENCODER(config, usegpu)
+        self.dropout = nn.Dropout(config.getfloat("train","dropout"))
         self.decoder = FC_DECODER(config, usegpu)
 
     def init_hidden(self, config, usegpu):
@@ -502,6 +505,7 @@ class CNN(nn.Module):
 
     def forward(self, x, doc_len, config):
         x = self.encoder(x, doc_len, config)
+        x = self.dropout(x)
         x = self.decoder(x, doc_len, config)
 
         return x
@@ -512,6 +516,7 @@ class LSTM(nn.Module):
         super(LSTM, self).__init__()
 
         self.encoder = LSTM_SINGLE_ENCODER(config, usegpu)
+        self.dropout = nn.Dropout(config.getfloat("train","dropout"))
         self.decoder = FC_DECODER(config, usegpu)
 
     def init_hidden(self, config, usegpu):
@@ -519,6 +524,7 @@ class LSTM(nn.Module):
 
     def forward(self, x, doc_len, config):
         x = self.encoder(x, doc_len, config)
+        x = self.dropout(x)
         x = self.decoder(x, doc_len, config)
 
         return x
@@ -529,6 +535,7 @@ class MULTI_LSTM(nn.Module):
         super(MULTI_LSTM, self).__init__()
 
         self.encoder = LSTM_ENCODER(config, usegpu)
+        self.dropout = nn.Dropout(config.getfloat("train","dropout"))
         self.decoder = FC_DECODER(config, usegpu)
 
     def init_hidden(self, config, usegpu):
@@ -536,6 +543,7 @@ class MULTI_LSTM(nn.Module):
 
     def forward(self, x, doc_len, config):
         x = self.encoder(x, doc_len, config)
+        x = self.dropout(x)
         x = self.decoder(x, doc_len, config)
 
         return x
@@ -548,6 +556,7 @@ class CNN_FINAL(nn.Module):
         self.encoder = CNN_ENCODER(config, usegpu)
         self.decoder = LSTM_DECODER(config, usegpu)
         self.trans_linear = nn.Linear(self.encoder.feature_len, self.decoder.feature_len)
+        self.dropout = nn.Dropout(config.getfloat("train","dropout"))
 
     def init_hidden(self, config, usegpu):
         self.decoder.init_hidden(config, usegpu)
@@ -557,6 +566,7 @@ class CNN_FINAL(nn.Module):
         if self.encoder.feature_len != self.decoder.feature_len:
             # print(self.encoder.feature_len,self.decoder.feature_len)
             x = self.trans_linear(x)
+        x = self.dropout(x)
         x = self.decoder(x, doc_len, config, self.encoder.attention)
 
         return x
@@ -569,6 +579,7 @@ class MULTI_LSTM_FINAL(nn.Module):
         self.encoder = LSTM_ENCODER(config, usegpu)
         self.decoder = LSTM_DECODER(config, usegpu)
         self.trans_linear = nn.Linear(self.encoder.feature_len, self.decoder.feature_len)
+        self.dropout = nn.Dropout(config.getfloat("train","dropout"))
 
     def init_hidden(self, config, usegpu):
         self.encoder.init_hidden(config, usegpu)
@@ -578,6 +589,7 @@ class MULTI_LSTM_FINAL(nn.Module):
         x = self.encoder(x, doc_len, config)
         if self.encoder.feature_len != self.decoder.feature_len:
             x = self.trans_linear(x)
+        x = self.dropout(x)
         x = self.decoder(x, doc_len, config, self.encoder.attention)
 
         return x
