@@ -41,7 +41,7 @@ def get_num_classes(s):
     if s == "law":
         return len(law_list)
     if s == "time":
-        return 11
+        return 25 * 12 + 3
     gg
 
 
@@ -51,20 +51,12 @@ def get_name(s, num):
     if s == "law":
         return law_list[num]
     if s == "time":
-        map_list = {
-            0: "死刑或无期",
-            1: "十年以上",
-            2: "七到十年",
-            3: "五到七年",
-            4: "三到五年",
-            5: "二到三年",
-            6: "一到二年",
-            7: "九到十二个月",
-            8: "六到九个月",
-            9: "零到六个月",
-            10: "没事"
-        }
-
-        return map_list[num]
+        if num <= 300:
+            return str(num)
+        else:
+            if num == 301:
+                return "死刑"
+            else:
+                return "无期"
 
     gg
