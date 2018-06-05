@@ -5,16 +5,31 @@ import thulac
 from net.parser import ConfigParser
 from net.data_formatter import check_sentence
 
-in_path = "/data/zhx/law/siftData"
-out_path = "/data/zhx/law/data/cail"
+path = "/data/disk1/private/zhonghaoxi/cail/data/small"
+
+cnt = 0
+acc_dic = {}
+f = open(os.path.join(path, "accu.txt"), "r")
+for line in f:
+    acc_dic[line[:-1]] = cnt
+    cnt += 1
+f.close()
+
+cnt = 0
+law_dic = {}
+f = open(os.path.join(path, "law.txt"), "r")
+for line in f:
+    law_dic[int(line[:-1])] = cnt
+    cnt += 1
+f.close()
 
 ouf = []
 for a in range(0, 20):
-    ouf.append(open(os.path.join(out_path, str(a)), "w"))
+    ouf.append(open(os.path.join(path, str(a)), "w"))
 
-cutter = thulac.thulac(model_path=r"/data/zhx/thulac/models", seg_only=True, filt=False)
+config = ConfigParser("/home/zhx/law_pre/config/default_local.config")
 
-config = ConfigParser("/home/zhx/law_pre/config/default_config.config")
+cutter = thulac.thulac(model_path=config.get("data", "thulac"), seg_only=True, filt=False)
 
 
 def cut(s):
@@ -28,42 +43,51 @@ def cut(s):
     return result
 
 
-cnt = 0
-for a in range(0, 58):
-    inf = open(os.path.join(in_path, "clean_result_%d.json" % a), "r")
+def cut_sentence(s):
+    s = cut(s)
+    res = [[]]
+    for x in s:
+        if x == "。":
+            res.append([])
+        else:
+            res[-1].append(x)
+    return res
+
+
+def solve_file(file_name, lower_bound, upper_bound):
+    cnt = 0
+
+    inf = open(os.path.join(path, file_name), "r")
+
     for line in inf:
-        try:
-            data = json.loads(line)
-            result = {}
-            result["meta"] = {}
-            result["meta"]["crit"] = data["meta"]["accusation"]
-            result["meta"]["time"] = {}
-            result["meta"]["time"]["youqi"] = [data["meta"]["term_of_imprisonment"]["imprisonment"]]
-            result["meta"]["time"]["guanzhi"] = [data["meta"]["term_of_imprisonment"]["control"]]
-            result["meta"]["time"]["huanxing"] = [data["meta"]["term_of_imprisonment"]["probation"]]
-            result["meta"]["time"]["juyi"] = [data["meta"]["term_of_imprisonment"]["detention"]]
-            result["meta"]["time"]["sixing"] = data["meta"]["term_of_imprisonment"]["death_penalty"]
-            result["meta"]["time"]["wuqi"] = data["meta"]["term_of_imprisonment"]["life_imprisonment"]
-            result["meta"]["criminals"] = data["meta"]["criminals"]
-            result["meta"]["law"] = []
-            for x in data["meta"]["relevant_articles"]:
-                result["meta"]["law"].append((x["article"], x["option"], x["section"]))
+        cnt += 1
+        if cnt % 5000 == 0:
+            print(cnt)
 
-            fact = cut(data["fact"])
-            res = [[]]
-            for x in fact:
-                if x == "。":
-                    res.append([])
-                else:
-                    res[-1].append(x)
-            if not (check_sentence(res, config)):
-                continue
-            result["fact"]=res
+        data = json.loads(line)
+        fact = cut_sentence(data["fact"])
 
-            cnt += 1
-            op = cnt % 20
-            print(json.dumps(result, ensure_ascii=False), file=ouf[op])
-            if cnt % 5000 == 0:
-                print(a,cnt)
-        except Exception as e:
-            gg
+        result = {
+            "fact": fact,
+            "meta": {
+                "law": [],
+                "crit": [],
+                "time": {
+                    "death": data["meta"]["term_of_imprisonment"]["death_penalty"],
+                    "forever": data["meta"]["term_of_imprisonment"]["life_imprisonment"],
+                    "imprisonment": data["meta"]["term_of_imprisonment"]["imprisonment"]
+                }
+            }
+        }
+
+        for x in data["meta"]["accusation"]:
+            result["meta"]["crit"].append(acc_dic[x])
+
+        for x in data["meta"]["relevant_articles"]:
+            result["meta"]["law"].append(law_dic[x])
+
+        print(json.dumps(result, ensure_ascii=False), file=ouf[cnt % (upper_bound - lower_bound + 1) + lower_bound])
+
+
+solve_file("train.json", 0, 14)
+solve_file("test.json", 15, 19)
