@@ -53,6 +53,8 @@ def cut_sentence(s):
             res[-1].append(x)
     return res
 
+debug = open("debug.out","w")
+
 
 def solve_file(file_name, lower_bound, upper_bound):
     cnt = 0
@@ -81,7 +83,7 @@ def solve_file(file_name, lower_bound, upper_bound):
         }
 
         for x in data["meta"]["accusation"]:
-            result["meta"]["crit"].append(acc_dic[x])
+            result["meta"]["crit"].append(acc_dic[x.replace("[","").replace("]","")])
 
         for x in data["meta"]["relevant_articles"]:
             result["meta"]["law"].append(law_dic[x])
