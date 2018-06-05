@@ -55,7 +55,7 @@ def test_file(net, test_dataset, usegpu, config, epoch):
 
         labels = reals
         for a in range(0, len(task_name)):
-            running_acc[a] = calc_accuracy(outputs[a], labels[a], task_loss_type[a], running_acc[a])
+            running_acc[a] = calc_accuracy(outputs[a], labels[a], task_loss_type[a], running_acc[a], config)
 
     net.train()
 
@@ -166,7 +166,7 @@ def train_file(net, train_dataset, test_dataset, usegpu, config):
             loss = 0
             for a in range(0, len(task_name)):
                 loss = loss + criterion[a](outputs[a], labels[a].float())
-                running_acc[a] = calc_accuracy(outputs[a], labels[a], task_loss_type[a], running_acc[a])
+                running_acc[a] = calc_accuracy(outputs[a], labels[a], task_loss_type[a], running_acc[a], config)
 
             # print_info("Loss done, backwarding...")
 

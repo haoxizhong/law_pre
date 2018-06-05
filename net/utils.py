@@ -12,7 +12,7 @@ cutter = None
 
 def init_thulac(config):
     global cutter
-    cutter = thulac.thulac(model_path=config.get("data","thulac"), seg_only=True, filt=False)
+    cutter = thulac.thulac(model_path=config.get("data", "thulac"), seg_only=True, filt=False)
 
 
 def print_time():
@@ -28,7 +28,7 @@ def get_data_list(d):
     return d.replace(" ", "").split(",")
 
 
-def calc_accuracy(outputs, labels, loss_type, res):
+def calc_accuracy(outputs, labels, loss_type, res, config):
     if loss_type == "multi_classification":
         if len(labels[0]) != len(outputs[0]):
             raise ValueError('Input dimensions of labels and outputs must match.')
@@ -37,9 +37,10 @@ def calc_accuracy(outputs, labels, loss_type, res):
         labels = labels.data
 
         nr_classes = outputs.size(1)
+        beta = config.getfloat("data", "beta")
         for i in range(nr_classes):
-            outputs1 = (outputs[:, i] >= 0.5).long()
-            labels1 = (labels[:, i] >= 0.5).long()
+            outputs1 = (outputs[:, i] >= beta).long()
+            labels1 = (labels[:, i] >= beta).long()
             res[i]["TP"] += int((labels1 * outputs1).sum())
             res[i]["FN"] += int((labels1 * (1 - outputs1)).sum())
             res[i]["FP"] += int(((1 - labels1) * outputs1).sum())
