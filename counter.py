@@ -53,7 +53,7 @@ def count(data):
 
     analyze_law(data["law"])
     analyze_crit(data["crit"])
-    analyze_time(data["time"])
+    analyze_time(data["time"]["imprisonment"])
 
 
 def check(data):
@@ -82,7 +82,7 @@ def draw_out(in_path, out_path):
         data = json.loads(line)
         if not (check(data)):
             continue
-        if not (check_sentence(data["content"],config)):
+        if not (check_sentence(data["content"], config)):
             continue
         count(data["meta"])
         cnt += 1

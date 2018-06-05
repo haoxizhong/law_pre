@@ -53,7 +53,8 @@ def cut_sentence(s):
             res[-1].append(x)
     return res
 
-debug = open("debug.out","w")
+
+debug = open("debug.out", "w")
 
 
 def solve_file(file_name, lower_bound, upper_bound):
@@ -62,33 +63,37 @@ def solve_file(file_name, lower_bound, upper_bound):
     inf = open(os.path.join(path, file_name), "r")
 
     for line in inf:
-        cnt += 1
-        if cnt % 5000 == 0:
-            print(cnt)
+        try:
+            cnt += 1
+            if cnt % 5000 == 0:
+                print(cnt)
 
-        data = json.loads(line)
-        fact = cut_sentence(data["fact"])
+            data = json.loads(line)
+            fact = cut_sentence(data["fact"])
 
-        result = {
-            "fact": fact,
-            "meta": {
-                "law": [],
-                "crit": [],
-                "time": {
-                    "death": data["meta"]["term_of_imprisonment"]["death_penalty"],
-                    "forever": data["meta"]["term_of_imprisonment"]["life_imprisonment"],
-                    "imprisonment": data["meta"]["term_of_imprisonment"]["imprisonment"]
+            result = {
+                "fact": fact,
+                "meta": {
+                    "law": [],
+                    "crit": [],
+                    "time": {
+                        "death": data["meta"]["term_of_imprisonment"]["death_penalty"],
+                        "forever": data["meta"]["term_of_imprisonment"]["life_imprisonment"],
+                        "imprisonment": data["meta"]["term_of_imprisonment"]["imprisonment"]
+                    }
                 }
             }
-        }
 
-        for x in data["meta"]["accusation"]:
-            result["meta"]["crit"].append(acc_dic[x.replace("[","").replace("]","")])
+            for x in data["meta"]["accusation"]:
+                result["meta"]["crit"].append(acc_dic[x.replace("[", "").replace("]", "")])
 
-        for x in data["meta"]["relevant_articles"]:
-            result["meta"]["law"].append(law_dic[x])
+            for x in data["meta"]["relevant_articles"]:
+                result["meta"]["law"].append(law_dic[x])
 
-        print(json.dumps(result, ensure_ascii=False), file=ouf[cnt % (upper_bound - lower_bound + 1) + lower_bound])
+            print(json.dumps(result, ensure_ascii=False), file=ouf[cnt % (upper_bound - lower_bound + 1) + lower_bound])
+        except Exception as e:
+            print(e)
+            print(line[:-1], file=debug)
 
 
 solve_file("train.json", 0, 14)
