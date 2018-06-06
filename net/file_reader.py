@@ -207,7 +207,7 @@ class reader():
                     while len(data_list) < batch_size and duplicate_time > 0:
                         duplicate_time -= 1
                         data_list.append(parse(y, config, transformer))
-                        content_list.append(y["content"])
+                        content_list.append(y["fact"])
                         self.read_cnt += 1
 
             if len(data_list) < batch_size:

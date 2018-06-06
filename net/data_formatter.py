@@ -157,7 +157,7 @@ def parse(data, config, transformer):
             label.append(analyze_law(data["meta"]["law"], config))
         if x == "time":
             label.append(analyze_time(data["meta"]["time"], config))
-    vector, len_vec = generate_vector(data["content"], config, transformer)
+    vector, len_vec = generate_vector(data["fact"], config, transformer)
     return vector, len_vec, torch.cat(label)
 
 
