@@ -21,11 +21,11 @@ def init(config):
             accusation_dict[name] = len(accusation_list) - 1
 
     cnt2 = 0
-    f = open(os.path.join(data_path, "law.txt"), "r")
+    f = open(os.path.join(data_path, "lawx.txt"), "r")
     for line in f:
         data = line[:-1].split(" ")
-        name = (int(data[0]), int(data[1]))
-        num = int(data[2])
+        name = int(data[0])
+        num = int(data[1])
         if num > min_frequency:
             cnt2 += num
             law_list.append(name)

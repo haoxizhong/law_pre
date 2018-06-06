@@ -45,52 +45,12 @@ def get_crit_id(data, config):
 
 def get_law_id(data, config):
     for x in data:
-        y = (x[0], x[1])
+        y = x
         if y in law_dict.keys():
             return law_dict[y]
 
 
 def get_time_id(data, config):
-    v = 0
-    if len(data["youqi"]) > 0:
-        v1 = data["youqi"][-1]
-    else:
-        v1 = 0
-    if len(data["guanzhi"]) > 0:
-        v2 = data["guanzhi"][-1]
-    else:
-        v2 = 0
-    if len(data["juyi"]) > 0:
-        v3 = data["juyi"][-1]
-    else:
-        v3 = 0
-    v = max(v1, v2, v3)
-
-    if data["sixing"]:
-        opt = 0
-    elif data["wuqi"]:
-        opt = 0
-    elif v > 10 * 12:
-        opt = 1
-    elif v > 7 * 12:
-        opt = 2
-    elif v > 5 * 12:
-        opt = 3
-    elif v > 3 * 12:
-        opt = 4
-    elif v > 2 * 12:
-        opt = 5
-    elif v > 1 * 12:
-        opt = 6
-    elif v > 9:
-        opt = 7
-    elif v > 6:
-        opt = 8
-    elif v > 0:
-        opt = 9
-    else:
-        opt = 10
-
     return opt
 
 
@@ -198,15 +158,7 @@ def parse(data, config, transformer):
 
 
 def check(data, config):
-    if not (check_sentence(data["content"], config)):
-        return False
-    if len(data["meta"]["criminals"]) != 1:
-        return False
-    if len(data["meta"]["crit"]) == 0 or len(data["meta"]["law"]) == 0:
-        return False
-    if not (check_crit(data["meta"]["crit"])):
-        return False
-    if not (check_law(data["meta"]["law"])):
+    if not (check_sentence(data["fact"], config)):
         return False
 
     return True

@@ -88,7 +88,7 @@ def solve_file(file_name, lower_bound, upper_bound):
                 result["meta"]["crit"].append(acc_dic[x.replace("[", "").replace("]", "")])
 
             for x in data["meta"]["relevant_articles"]:
-                result["meta"]["law"].append(law_dic[x])
+                result["meta"]["law"].append(law_dic[int(x)])
 
             print(json.dumps(result, ensure_ascii=False), file=ouf[cnt % (upper_bound - lower_bound + 1) + lower_bound])
         except Exception as e:
