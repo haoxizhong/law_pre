@@ -51,7 +51,11 @@ def get_law_id(data, config):
 
 
 def get_time_id(data, config):
-    return opt
+    if data["dead"]:
+        return 301
+    if data["foever"]:
+        return 302
+    return data["imprisonment"]
 
 
 def analyze_crit(data, config):
@@ -159,6 +163,8 @@ def parse(data, config, transformer):
 
 def check(data, config):
     if not (check_sentence(data["fact"], config)):
+        return False
+    if data["meta"]["time"]["imprisonment"] > 300:
         return False
 
     return True
