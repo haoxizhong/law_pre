@@ -69,9 +69,9 @@ def count(data):
     global total_cnt
     total_cnt += 1
 
-    analyze_law(data["law"])
-    analyze_crit(data["crit"])
-    analyze_time(data["time"])
+    analyze_law(data["meta"]["law"])
+    analyze_crit(data["meta"]["crit"])
+    analyze_time(data["meta"]["time"])
     analyze_fact(data["fact"])
 
 
@@ -86,7 +86,7 @@ def draw_out(in_path, out_path):
         #    continue
         # if not (check_sentence(data["content"], config)):
         #    continue
-        count(data["meta"])
+        count(data)
         cnt += 1
         if cnt % 500000 == 0:
             print(cnt)
@@ -110,6 +110,7 @@ if __name__ == "__main__":
             print(x, crit[x], file=f)
         except Exception as e:
             break
+        x += 1
     f.close()
 
     f = open(os.path.join(in_path, "time.txt"), "w")
@@ -119,6 +120,7 @@ if __name__ == "__main__":
             print(x, term[x], file=f)
         except Exception as e:
             break
+        x += 1
     f.close()
 
     f = open(os.path.join(in_path, "lawx.txt"), "w")
@@ -128,24 +130,33 @@ if __name__ == "__main__":
             print(x, law[x], file=f)
         except Exception as e:
             break
+        x += 1
     f.close()
 
     f = open(os.path.join(in_path, "docu.txt"), "w")
-    x = 0
+    x = 1
+    sumx = 0
     while True:
         try:
-            print(x, fact_len[x], file=f)
+            sumx += fact_len[x]
+            print(x, fact_len[x],sumx, file=f)
         except Exception as e:
-            break
+            if x>=5000:
+                break
+        x += 1
     f.close()
 
     f = open(os.path.join(in_path, "sent.txt"), "w")
-    x = 0
+    x = 1
+    sumx = 0
     while True:
         try:
-            print(x, sent_len[x], file=f)
+            sumx += sent_len[x]
+            print(x, sent_len[x],sumx, file=f)
         except Exception as e:
-            break
+            if x>= 5000:
+                break
+        x += 1
     f.close()
 
     f = open(os.path.join(in_path, "total.txt"), "w")
