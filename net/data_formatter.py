@@ -51,9 +51,9 @@ def get_law_id(data, config):
 
 
 def get_time_id(data, config):
-    if data["dead"]:
+    if data["death"]:
         return 301
-    if data["foever"]:
+    if data["forever"]:
         return 302
     return data["imprisonment"]
 
@@ -69,7 +69,7 @@ def analyze_crit(data, config):
 def analyze_law(data, config):
     res = torch.from_numpy(np.zeros(get_num_classes("law")))
     for x in data:
-        y = (x[0], x[1])
+        y=x
         if y in law_dict.keys():
             res[law_dict[y]] = 1
     return res
