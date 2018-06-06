@@ -19,6 +19,8 @@ total_cnt = 0
 crit = {}
 law = {}
 term = {}
+fact_len = {}
+sent_len = {}
 
 config = ConfigParser("/home/zhx/law_pre/config/default_config.config")
 
@@ -38,9 +40,29 @@ def analyze_crit(data):
 
 
 def analyze_time(data):
+    if data["death"]:
+        data = 302
+    elif data["forever"]:
+        data = 303
+    else:
+        data = data["imprisonment"]
     if not (data in term.keys()):
         term[data] = 0
     term[data] += 1
+
+
+def analyze_fact(data):
+    l = len(data)
+    if not (l in fact_len):
+        fact_len[l] = 0
+    fact_len[l] += 1
+
+    l = 0
+    for a in range(0, len(data)):
+        l = max(l, len(data[a]))
+    if not (l in sent_len):
+        sent_len[l] = 0
+    sent_len[l] += 1
 
 
 def count(data):
@@ -49,7 +71,8 @@ def count(data):
 
     analyze_law(data["law"])
     analyze_crit(data["crit"])
-    analyze_time(data["time"]["imprisonment"])
+    analyze_time(data["time"])
+    analyze_fact(data["fact"])
 
 
 def draw_out(in_path, out_path):
@@ -59,9 +82,9 @@ def draw_out(in_path, out_path):
     cnt = 0
     for line in inf:
         data = json.loads(line)
-        #if not (check(data)):
+        # if not (check(data)):
         #    continue
-        #if not (check_sentence(data["content"], config)):
+        # if not (check_sentence(data["content"], config)):
         #    continue
         count(data["meta"])
         cnt += 1
@@ -81,18 +104,48 @@ if __name__ == "__main__":
     print(total_cnt)
 
     f = open(os.path.join(in_path, "crit.txt"), "w")
-    for x in crit.keys():
-        print(x, crit[x], file=f)
+    x = 0
+    while True:
+        try:
+            print(x, crit[x], file=f)
+        except Exception as e:
+            break
     f.close()
 
     f = open(os.path.join(in_path, "time.txt"), "w")
-    for x in term.keys():
-        print(x, term[x], file=f)
+    x = 0
+    while True:
+        try:
+            print(x, term[x], file=f)
+        except Exception as e:
+            break
     f.close()
 
     f = open(os.path.join(in_path, "lawx.txt"), "w")
-    for x in law.keys():
-        print(x,law[x], file=f)
+    x = 0
+    while True:
+        try:
+            print(x, law[x], file=f)
+        except Exception as e:
+            break
+    f.close()
+
+    f = open(os.path.join(in_path, "docu.txt"), "w")
+    x = 0
+    while True:
+        try:
+            print(x, fact_len[x], file=f)
+        except Exception as e:
+            break
+    f.close()
+
+    f = open(os.path.join(in_path, "sent.txt"), "w")
+    x = 0
+    while True:
+        try:
+            print(x, sent_len[x], file=f)
+        except Exception as e:
+            break
     f.close()
 
     f = open(os.path.join(in_path, "total.txt"), "w")
