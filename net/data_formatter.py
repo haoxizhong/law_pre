@@ -69,7 +69,7 @@ def analyze_crit(data, config):
 def analyze_law(data, config):
     res = torch.from_numpy(np.zeros(get_num_classes("law")))
     for x in data:
-        y=x
+        y = x
         if y in law_dict.keys():
             res[law_dict[y]] = 1
     return res
@@ -116,32 +116,39 @@ def generate_vector(data, config, transformer):
     vec = []
     len_vec = [0, 0]
     blank = torch.from_numpy(get_word_vec("BLANK", config, transformer))
-    for x in data:
+    sentence_num = config.getint("data", "sentence_num")
+    sentence_len = config.getint("data", "sentence_len")
+
+    ly = min(len(data), sentence_num)
+    for b in range(0, ly):
+        x = data[b]
         temp_vec = []
-        len_vec.append(len(x))
+        lx = min(len(x), sentence_len)
+        len_vec.append(lx)
         len_vec[1] += 1
-        for y in x:
+        for a in range(0, lx):
+            y = x[a]
             len_vec[0] += 1
             z = get_word_vec(y, config, transformer)
             temp_vec.append(torch.from_numpy(z))
-        while len(temp_vec) < config.getint("data", "sentence_len"):
+        while len(temp_vec) < sentence_len:
             temp_vec.append(blank)
         vec.append(torch.stack(temp_vec))
 
     temp_vec = []
-    while len(temp_vec) < config.getint("data", "sentence_len"):
+    while len(temp_vec) < sentence_len:
         temp_vec.append(blank)
 
-    while len(vec) < config.getint("data", "sentence_num"):
+    while len(vec) < sentence_num:
         vec.append(torch.stack(temp_vec))
         len_vec.append(1)
-    if len_vec[1] > config.getint("data", "sentence_num"):
+    if len_vec[1] > sentence_num:
         gg
     for a in range(2, len(len_vec)):
-        if len_vec[a] > config.getint("data", "sentence_len"):
+        if len_vec[a] > sentence_len:
             print(data)
             gg
-    if len(len_vec) != config.getint("data", "sentence_num") + 2:
+    if len(len_vec) != sentence_num + 2:
         gg
 
     return torch.stack(vec), torch.LongTensor(len_vec)
@@ -162,9 +169,9 @@ def parse(data, config, transformer):
 
 
 def check(data, config):
-    if not (check_sentence(data["fact"], config)):
-        return False
-    #if data["meta"]["time"]["imprisonment"] > 300:
+    # if not (check_sentence(data["fact"], config)):
+    #    return False
+    # if data["meta"]["time"]["imprisonment"] > 300:
     #    return False
 
     return True
