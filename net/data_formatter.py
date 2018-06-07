@@ -164,7 +164,7 @@ def parse(data, config, transformer):
 def check(data, config):
     if not (check_sentence(data["fact"], config)):
         return False
-    if data["meta"]["time"]["imprisonment"] > 300:
-        return False
+    #if data["meta"]["time"]["imprisonment"] > 300:
+    #    return False
 
     return True

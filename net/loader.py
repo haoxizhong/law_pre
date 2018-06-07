@@ -13,7 +13,7 @@ def init(config):
     cnt1 = 0
     for line in f:
         data = line[:-1].split(" ")
-        name = data[0]
+        name = int(data[0])
         num = int(data[1])
         if num > min_frequency:
             cnt1 += num
