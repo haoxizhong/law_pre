@@ -4,8 +4,8 @@ import random
 from net.parser import ConfigParser
 from net.data_formatter import check_sentence
 
-in_path = "/data/disk1/private/zhx/law/data/small"
-out_path = "/data/disk1/private/zhx/law/data/small"
+in_path = "/data/disk1/private/zhx/law/data/big"
+out_path = "/data/disk1/private/zhx/law/data/big"
 
 
 def solve_file(file_name, lower_bound, upper_bound):
@@ -23,7 +23,7 @@ def solve_file(file_name, lower_bound, upper_bound):
             except Exception as e:
                 print(e)
                 gg
-
+    print(len(arr))
     random.shuffle(arr)
 
     ouf = []
@@ -31,7 +31,7 @@ def solve_file(file_name, lower_bound, upper_bound):
         ouf.append(open(os.path.join(out_path, str(a)), "w"))
 
     for a in range(0, len(arr)):
-        print(arr[a], file=ouf[a % (upper_bound - lower_bound + 1) + 1])
+        print(arr[a], file=ouf[a % (upper_bound - lower_bound + 1)])
 
 
 solve_file("train.json", 0, 14)
