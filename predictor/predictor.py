@@ -2,6 +2,7 @@ from net.parser import ConfigParser
 from net.model import CNNSeq
 from net.file_reader import init_transformer
 from net.data_formatter import generate_vector
+from net.loader import init
 
 import torch
 import thulac
@@ -24,6 +25,7 @@ class Predictor:
 
         init_transformer(self.config)
         from net.file_reader import transformer
+        init(self.config)
         self.transformer = transformer
 
         self.cutter = thulac.thulac(model_path=self.config.get("data", "thulac"), seg_only=True)
