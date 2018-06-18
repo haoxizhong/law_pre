@@ -16,15 +16,11 @@ class Predictor:
         self.config = ConfigParser(configFilePath)
 
         self.batch_size = self.config.getint("data", "batch_size")
-        self.model_list = []
 
         self.task_name = self.config.get("data", "type_of_label").replace(" ", "").split(",")
 
-        for name in self.task_name:
-            self.model_list[name] = CNNSeq(self.config, True)
-            self.model_list[name].load_state_dict(torch.load("model/%s" % name))
-            self.model_list[name] = self.model_list[name].cuda()
-            self.model_list[name].eval()
+        self.model = CNNSeq(self.config, True)
+        self.model.load_state_dict(torch.load("model/model"))
 
         init_transformer(self.config)
         from net.file_reader import transformer
@@ -32,12 +28,25 @@ class Predictor:
 
         self.cutter = thulac.thulac(model_path=self.config.get("data", "thulac"), seg_only=True)
 
-    def cut(self, sentence):
+    def cut(self, s):
+        data = self.cutter.cut(s)
         result = []
-        for s in sentence:
-            s = self.cutter.cut(s)
-            print(s)
-            gg
+        first = True
+        for x, y in data:
+            if x == " ":
+                continue
+            result.append(x)
+        return result
+
+    def cut_sentence(self, s):
+        s = self.cut(s)
+        res = [[]]
+        for x in s:
+            if x == "。":
+                res.append([])
+            else:
+                res[-1].append(x)
+        return res
 
     def forward(self, content, len_vec):
         result = []
@@ -46,8 +55,10 @@ class Predictor:
 
         content = Variable(content).cuda()
         len_vec = Variable(len_vec).cuda()
+        result = self.model.forward(content, len_vec, self.config)
+
+        gg
         for name in self.task_name:
-            res = self.model_list[name].forward(content, len_vec)
             if name == "time":
                 pass
             else:
@@ -64,7 +75,7 @@ class Predictor:
         len_vec = []
 
         for a in range(0, len(content)):
-            content[a] = self.cut(content[a])
+            content[a] = self.cut_sentence(content[a])
             content[a], length = generate_vector(content[a], self.transformer, self.config)
             len_vec.append(length)
 
