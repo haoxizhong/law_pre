@@ -20,15 +20,15 @@ class Predictor:
 
         self.task_name = self.config.get("data", "type_of_label").replace(" ", "").split(",")
 
-        self.model = CNNSeq(self.config, True)
-        self.model.load_state_dict(torch.load("model/model"))
-
         init_transformer(self.config)
         from net.file_reader import transformer
         init(self.config)
         self.transformer = transformer
 
         self.cutter = thulac.thulac(model_path=self.config.get("data", "thulac"), seg_only=True)
+
+        self.model = CNNSeq(self.config, True)
+        self.model.load_state_dict(torch.load("model/model"))
 
     def cut(self, s):
         data = self.cutter.cut(s)
