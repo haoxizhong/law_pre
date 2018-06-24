@@ -51,12 +51,5 @@ def get_name(s, num):
     if s == "law":
         return law_list[num]
     if s == "time":
-        if num <= 300:
-            return str(num)
-        else:
-            if num == 301:
-                return "死刑"
-            else:
-                return "无期"
-
+        return str(num)
     gg
