@@ -2,7 +2,7 @@ import os
 import json
 
 path = "/data/disk1/private/zhx/law/data/big"
-out_path = "/data/dis1k/private/zhx/law/data/big_new"
+out_path = "/data/disk1/private/zhx/law/data/big_new"
 
 for file_name in os.listdir(path):
     f = open(os.path.join(path, file_name), "r")
