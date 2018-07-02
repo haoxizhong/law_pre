@@ -4,9 +4,9 @@ import json
 path = "/data/disk1/private/zhx/law/data/big"
 out_path = "/data/disk1/private/zhx/law/data/big_new"
 
-for file_name in os.listdir(path):
-    f = open(os.path.join(path, file_name), "r")
-    ouf = open(os.path.join(out_path, file_name), "w")
+for file_name in range(0,20):
+    f = open(os.path.join(path, str(file_name)), "r")
+    ouf = open(os.path.join(out_path, str(file_name)), "w")
     print(file_name)
 
     for line in f:
