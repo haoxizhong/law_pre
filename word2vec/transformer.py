@@ -15,7 +15,5 @@ for file_name in os.listdir(path):
             arr.append([x for x in y if x != "\r" and x != "\n"])
         arr = [x for x in arr if x != []]
 
-        print(json.dumps({"fact": arr, "meta": data["meta"]}))
+        print(json.dumps({"fact": arr, "meta": data["meta"]},ensure_ascii=False),file=ouf)
 
-        break
-    break
