@@ -18,6 +18,3 @@ for file_name in range(0, 20):
         result = " 。 ".join(arr)
 
         print(result, file=ouf)
-        break
-
-    break
