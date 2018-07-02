@@ -12,8 +12,8 @@ for file_name in os.listdir(path):
         arr = []
         data = json.loads(line)
         for y in data["fact"]:
-            arr.append([x != "\r" and x != "\n" for x in y])
-        arr = [x != [] for x in arr]
+            arr.append([x for x in y if x != "\r" and x != "\n"])
+        arr = [x for x in arr if x != []]
 
         print(json.dumps({"fact": arr, "meta": data["meta"]}))
 
