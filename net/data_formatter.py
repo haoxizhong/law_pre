@@ -88,7 +88,7 @@ word_dict = {}
 
 
 def load(x, transformer):
-    return transformer.load(x)
+    return np.array(transformer.load(x), dtype=np.float32)
 
     try:
         return transformer[x].astype(dtype=np.float32)
