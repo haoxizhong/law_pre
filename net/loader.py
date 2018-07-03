@@ -41,7 +41,7 @@ def get_num_classes(s):
     if s == "law":
         return len(law_list)
     if s == "time":
-        return 25 * 12 + 3
+        return 9
     gg
 
 
