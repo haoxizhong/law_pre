@@ -1,23 +1,22 @@
 # coding:utf-8
 import numpy as np
-import json
+import os
 import pickle
 
 
-class word2vec:
+class Word2vec:
     word_num = 0
     vec_len = 0
     word2id = None
     vec = None
 
-    def __init__(self, word_dic="/data/zhx/law/word2vec/word2id.pkl",
-                 vec_path="/data/zhx/law/word2vec/vec_nor.npy"):
+    def __init__(self, model_path):
         print("begin to load word embedding")
-        f = open(word_dic, "rb")
+        f = open(os.path.join(model_path, "word2id.pkl"), "rb")
         (self.word_num, self.vec_len) = pickle.load(f)
         self.word2id = pickle.load(f)
         f.close()
-        self.vec = np.load(vec_path)
+        self.vec = np.load(os.path.join(model_path, "vec_nor.npy"))
         print("load word embedding succeed")
 
     def load(self, word):
@@ -28,6 +27,6 @@ class word2vec:
 
 
 if __name__ == "__main__":
-    a = word2vec()
+    a = Word2vec()
     print(a.vec_len)
     print(a.load('，'))

@@ -8,7 +8,7 @@ from torch.autograd import Variable
 
 from net.data_formatter import check, parse, generate_vector, get_time_id, get_crit_id, get_law_id
 from net.utils import get_data_list
-from word2vec.loader import word2vec
+from word2vec.loader import Word2vec
 from net.utils import cut, print_info
 
 # print("working...")
@@ -18,7 +18,7 @@ transformer = None
 
 def init_transformer(config):
     global transformer
-    transformer = word2vec(os.path.join(config.get("data", "word2vec"), "model.bin"))
+    transformer = Word2vec(config.get("data", "word2vec"))
 
     print("Transformer init done")
 

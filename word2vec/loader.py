@@ -1,13 +1,13 @@
 # coding:utf-8
 import fasttext
+import os
 
 
-class word2vec:
-
+class Word2vec:
     def __init__(self, path):
         print("begin to load word embedding")
 
-        self.model = fasttext.load_model(path)
+        self.model = fasttext.load_model(os.path.join(path, "model.bin"))
 
         print("load word embedding succeed")
 
@@ -16,4 +16,4 @@ class word2vec:
 
 
 if __name__ == "__main__":
-    a = word2vec()
+    pass
