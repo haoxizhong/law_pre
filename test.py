@@ -6,7 +6,7 @@ from net.model import get_model
 from net.file_reader import init_dataset, init_transformer
 from net.work import test_file
 from net.parser import ConfigParser
-from net.loader import init
+from net.loader import init_loader
 from net.utils import init_thulac
 
 parser = argparse.ArgumentParser()
@@ -32,7 +32,7 @@ config.config.set("train", "train_num_process", 0)
 
 
 def self_init():
-    init(config)
+    init_loader(config)
     init_transformer(config)
     init_thulac(config)
 

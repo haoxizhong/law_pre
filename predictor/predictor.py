@@ -58,6 +58,7 @@ class Predictor:
         content = Variable(content).cuda()
         len_vec = Variable(len_vec).cuda()
         result = self.model.forward(content, len_vec, self.config)
+        print(result)
 
         gg
         for name in self.task_name:

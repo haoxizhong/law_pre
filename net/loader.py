@@ -6,7 +6,7 @@ law_list = []
 law_dict = {}
 
 
-def init(config):
+def init_loader(config):
     min_frequency = config.getint("data", "min_frequency")
     data_path = os.path.join(config.get("data", "data_path"), config.get("data", "dataset"))
     f = open(os.path.join(data_path, "crit.txt"), "r")

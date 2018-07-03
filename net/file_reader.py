@@ -1,7 +1,6 @@
 import torch
 import os
 import json
-import time
 from torch.utils.data import DataLoader
 import multiprocessing
 import random
@@ -9,101 +8,20 @@ from torch.autograd import Variable
 
 from net.data_formatter import check, parse, generate_vector, get_time_id, get_crit_id, get_law_id
 from net.utils import get_data_list
-from net.word2vec import word2vec
+from word2vec.loader import word2vec
 from net.utils import cut, print_info
 
 # print("working...")
-import h5py
 
 transformer = None
 
 
 def init_transformer(config):
     global transformer
-    transformer = word2vec(os.path.join(config.get("data", "word2vec"), "word2id.pkl"),
-                           os.path.join(config.get("data", "word2vec"), "vec_nor.npy"))
-    transformer = {x: transformer.vec[y] for x, y in transformer.word2id.items()}
+    transformer = word2vec(os.path.join(config.get("data", "word2vec"), "model.bin"))
 
     print("Transformer init done")
 
-
-"""duplicate_list = {
-    "crit": {
-        0: 5,
-        1: 5,
-        2: 10,
-        3: 3,
-        5: 15,
-        7: 5,
-        8: 7,
-        9: 7,
-        10: 40,
-        11: 4,
-        12: 4,
-        14: 10,
-        15: 5,
-        16: 1,
-        19: 3,
-        20: 10,
-        21: 3,
-        22: 2,
-        23: 2,
-        24: 15,
-        25: 7,
-        27: 3,
-        28: 2,
-        29: 10,
-        30: 5,
-        31: 8,
-        32: 20,
-        33: 20,
-        34: 7,
-        35: 2,
-        36: 4,
-        37: 2,
-        38: 2,
-        39: 15
-    },
-    "law1": {
-        0: 5,
-        1: 5,
-        2: 10,
-        3: 3,
-        6: 15,
-        7: 5,
-        8: 5,
-        9: 5,
-        10: 30,
-        11: 4,
-        12: 4,
-        14: 10,
-        15: 5,
-        16: 1,
-        19: 3,
-        20: 10,
-        21: 3,
-        22: 2,
-        23: 2,
-        24: 20,
-        25: 10,
-        28: 5,
-        29: 10,
-        30: 10,
-        31: 20,
-        32: 20,
-        33: 5,
-        34: 2,
-        35: 2,
-        36: 2,
-        37: 15
-    },
-    "time": {
-        0: 20,
-        1: 3,
-        2: 3,
-        3: 3
-    }
-}"""
 
 duplicate_list = {"crit": {}, "law1": {}, "time": {}}
 
