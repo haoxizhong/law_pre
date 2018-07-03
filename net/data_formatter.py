@@ -89,7 +89,7 @@ word_dict = {}
 
 def load(x, transformer):
     return transformer.load(x)
-    
+
     try:
         return transformer[x].astype(dtype=np.float32)
     except Exception as e:
