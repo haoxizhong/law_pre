@@ -56,7 +56,7 @@ class Predictor:
 
     def generate_multi(self, arr):
         arr = torch.sigmoid(arr)
-        arr = arr.numpy()
+        arr = arr.cpu().data.numpy()
         print(arr)
         res = []
 
@@ -69,8 +69,8 @@ class Predictor:
         return res
 
     def generate_one(self, arr):
-        arr = torch.max(arr, dim=1)
-        arr = arr.numpy()
+        arr = torch.max(arr, dim=1)[1]
+        arr = arr.cpu().data.numpy()
         print(arr)
         res = []
         for a in range(0, len(arr)):
@@ -97,7 +97,7 @@ class Predictor:
         arr = self.generate_multi(result[1])
         for a in range(0, len(arr)):
             res[a]["accusation"] = arr[a]
-        arr = self.generate_one(result[1])
+        arr = self.generate_one(result[2])
         for a in range(0, len(arr)):
             res[a]["imprisonment"] = arr[a]
 
