@@ -30,6 +30,7 @@ class Predictor:
         self.model = CNNSeq(self.config, True)
         self.model.load_state_dict(torch.load("model/model"))
         self.model = self.model.cuda()
+        self.model.init_hidden(self.config, True)
 
     def cut(self, s):
         data = self.cutter.cut(s)
