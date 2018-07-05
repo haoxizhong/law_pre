@@ -52,6 +52,26 @@ class Predictor:
                 res[-1].append(x)
         return res
 
+    def generate_multi(self, arr):
+        arr = torch.sigmoid(arr)
+        res = []
+
+        for a in range(0, len(arr)):
+            res.append([])
+            for b in range(0, len(arr[0])):
+                if arr[a][b] > 0:
+                    res[a].append(b + 1)
+
+        return res
+
+    def generate_one(self, arr):
+        arr = torch.max(arr, dim=1)
+        res = []
+        for a in range(0, len(arr)):
+            res.append(arr[a])
+
+        return res
+
     def forward(self, content, len_vec):
         result = []
         for a in range(0, self.batch_size):
@@ -62,14 +82,20 @@ class Predictor:
         result = self.model.forward(content, len_vec, self.config)
         print(result)
 
-        gg
-        for name in self.task_name:
-            if name == "time":
-                pass
-            else:
-                pass
+        res = []
+        for a in range(0, self.batch_size):
+            res.append({})
+        arr = self.generate_multi(result[0])
+        for a in range(0, len(arr)):
+            res[a]["articles"] = arr[a]
+        arr = self.generate_multi(result[1])
+        for a in range(0, len(arr)):
+            res[a]["accusation"] = arr[a]
+        arr = self.generate_one(result[1])
+        for a in range(0, len(arr)):
+            res[a]["imprisonment"] = arr[a]
 
-        return result
+        return res
 
     def predict(self, content):
         real_size = len(content)
