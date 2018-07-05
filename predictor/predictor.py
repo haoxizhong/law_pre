@@ -79,7 +79,7 @@ class Predictor:
 
         for a in range(0, len(content)):
             content[a] = self.cut_sentence(content[a])
-            content[a], length = generate_vector(content[a], self.transformer, self.config)
+            content[a], length = generate_vector(content[a], self.config, self.transformer)
             len_vec.append(length)
 
         content = torch.stack(content)
