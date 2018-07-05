@@ -32,6 +32,8 @@ class Predictor:
         self.model = self.model.cuda()
         self.model.init_hidden(self.config, True)
 
+        self.beta = self.config.getfloat("data", "beta")
+
     def cut(self, s):
         data = self.cutter.cut(s)
         result = []
@@ -54,6 +56,8 @@ class Predictor:
 
     def generate_multi(self, arr):
         arr = torch.sigmoid(arr)
+        arr = arr.numpy()
+        print(arr)
         res = []
 
         for a in range(0, len(arr)):
@@ -66,6 +70,8 @@ class Predictor:
 
     def generate_one(self, arr):
         arr = torch.max(arr, dim=1)
+        arr = arr.numpy()
+        print(arr)
         res = []
         for a in range(0, len(arr)):
             res.append(arr[a])
@@ -80,7 +86,7 @@ class Predictor:
         content = Variable(content).cuda()
         len_vec = Variable(len_vec).cuda()
         result = self.model.forward(content, len_vec, self.config)
-        print(result)
+        # print(result)
 
         res = []
         for a in range(0, self.batch_size):
