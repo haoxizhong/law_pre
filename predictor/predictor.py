@@ -74,7 +74,12 @@ class Predictor:
         print(arr)
         res = []
         for a in range(0, len(arr)):
-            res.append(arr[a])
+            if arr[a] == 301:
+                res.append(-2)
+            elif arr[a] == 302:
+                res.append(-1)
+            else:
+                res.append(arr[a])
 
         return res
 
