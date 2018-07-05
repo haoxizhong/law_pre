@@ -63,7 +63,7 @@ class Predictor:
         for a in range(0, len(arr)):
             res.append([])
             for b in range(0, len(arr[0])):
-                if arr[a][b] > 0:
+                if arr[a][b] > self.beta:
                     res[a].append(b + 1)
 
         return res
