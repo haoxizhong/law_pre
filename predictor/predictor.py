@@ -45,6 +45,7 @@ class Predictor:
         return result
 
     def cut_sentence(self, s):
+        s = s.replace("\n","").replace("\r","")
         s = self.cut(s)
         res = [[]]
         for x in s:
@@ -57,7 +58,6 @@ class Predictor:
     def generate_multi(self, arr):
         arr = torch.sigmoid(arr)
         arr = arr.cpu().data.numpy()
-        print(arr)
         res = []
 
         for a in range(0, len(arr)):
@@ -71,7 +71,6 @@ class Predictor:
     def generate_one(self, arr):
         arr = torch.max(arr, dim=1)[1]
         arr = arr.cpu().data.numpy()
-        print(arr)
         res = []
         for a in range(0, len(arr)):
             if arr[a] == 301:
